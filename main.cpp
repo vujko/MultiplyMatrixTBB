@@ -4,6 +4,8 @@
 #include "Matrix.h"
 #include <string>
 #include <fstream>
+#include "ParallelMultiplication.h"
+
 using namespace std;
 
 void pomnoziSerijski(Matrix& A, Matrix& B) {
@@ -12,7 +14,7 @@ void pomnoziSerijski(Matrix& A, Matrix& B) {
 	for (int i = 0; i < dim; i++) {
 		for (int j = 0; j < dim; j++) {
 			for (int k = 0; k < dim; k++)
-				C.data[i*dim + j] += A.data[i*dim + k] * B.data[k*dim + j];
+				C(i, j) += A(i,k) * B(k,j);
 		}
 	}
 	A = C;
@@ -44,12 +46,31 @@ Matrix ucitajMatricu(string my_file) {
 }
 
 int main() {
-	//try i catch za invalid argument
-	Matrix A_matrix = ucitajMatricu("inputA.txt");
-	Matrix B_matrix = ucitajMatricu("inputB.txt");
-	cout << A_matrix << endl << endl;
-	cout << B_matrix << endl << endl;
-	pomnoziSerijski(A_matrix, B_matrix);
-	cout << A_matrix << endl;
-	return 0;
+	try {
+		Matrix A_matrix = ucitajMatricu("inputA.txt");
+		Matrix B_matrix = ucitajMatricu("inputB.txt");
+
+		cout << "Matrica A:" << endl;
+		cout << A_matrix << endl << endl;
+		cout << "Matrica B:" << endl;
+		cout << B_matrix << endl << endl;
+		pomnoziSerijski(A_matrix, B_matrix);
+		cout << "Matrica A*B:" << endl;
+		cout << A_matrix << endl;
+
+		A_matrix = ucitajMatricu("inputA.txt");
+		ParallelMultiplication::multiply(A_matrix, B_matrix);
+		cout << endl << "A posle paralelnog mnozenja" << endl;
+		cout << A_matrix << endl;
+
+
+
+		
+		return 0;
+	}
+	catch (runtime_error e) {
+		cout << e.what() << endl;
+		return -1;
+	}
+	
 }
