@@ -12,18 +12,20 @@ void ParallelMultiplication::multiply(Matrix & a, Matrix & b)
 
 		for (int j = 0; j != red_matrica; j++) {
 			zadaci[i][j] = new (task::allocate_root()) MatrixTask(i, j, a, e);
-			if (j != 0 && j != a.red - 1) {
-				//successor[0] - prethodni zadatak
-				zadaci[i][j]->successor[0] = zadaci[i][j - 1];
-				//successor[1] - sledeci zadatak
-				zadaci[i][j]->successor[1] = zadaci[i][j + 1];
-			}
-			else if (j == 0) {
-				zadaci[i][j]->successor[1] = zadaci[i][j + 1];
-			}
-			else {
-				zadaci[i][j]->successor[0] = zadaci[i][j - 1];
-			}
+			//if (j != 0 && j != a.red - 1) {
+			//	//successor[0] - prethodni zadatak
+			//	zadaci[i][j]->successor[0] = zadaci[i][j - 1];
+			//	//successor[1] - sledeci zadatak
+			//	zadaci[i][j]->successor[1] = zadaci[i][j + 1];
+			//}
+			//else if (j == 0) {
+			//	zadaci[i][j]->successor[1] = zadaci[i][j + 1];
+			//}
+			//else {
+			//	zadaci[i][j]->successor[0] = zadaci[i][j - 1];
+			//}
+
+
 
 			for (int k = 0; k != red_matrica; k++) {
 				zadaci[i][j]->input1[k] = a(i, k);
@@ -33,6 +35,14 @@ void ParallelMultiplication::multiply(Matrix & a, Matrix & b)
 		}
 
 		for (int j = 0; j != red_matrica; j++) {
+			//ovde su zadaci vec svi napravljeni sad ih povezujemo
+			for (int k = 0; k != red_matrica; k++) {
+				if(k != j){
+					zadaci[i][j]->successor[k] = zadaci[i][k];
+
+				}
+
+			}
 			task::spawn(*zadaci[i][j]);
 		}
 	}
