@@ -8,8 +8,14 @@
 
 using namespace std;
 
-#define M_SIZE 75
+#define M_SIZE 40
+//Debug verzija M_SIZE 40:
+//otprilike jednako vreme izvrsenje
 
+//Realease verzija M_SIZE 150
+//otprilike jednako vreme izvsenje
+
+//Sto veci m_size to paralelno postaje brzi
 void pomnoziSerijski(Matrix& A, Matrix& B) {
 	int dim = A.red;
 	Matrix C(dim);

@@ -17,21 +17,11 @@ void ParallelMultiplication::multiply(Matrix & a, Matrix & b)
 
 		for (int j = 0; j != red_matrica; j++) {
 			if (j == 0) {
-				zadaci_p[i] = new (task::allocate_root()) MatrixTaskRoot(i, a, e);
+				zadaci_p[i] = new (task::allocate_root()) MatrixTaskRoot(i, j, a, b, e);
 
-				for (int k = 0; k != red_matrica; k++) {
-					zadaci_p[i]->input1[k] = a(i, k);
-					zadaci_p[i]->input2[k] = b(k, j);
-
-				}
 			}
 			else {
-				zadaci_m[i][j] = new (task::allocate_root()) MatrixTask(i, j, a, zadaci_p[i]);
-
-				for (int k = 0; k != red_matrica; k++) {
-					zadaci_m[i][j]->input1[k] = a(i, k);
-					zadaci_m[i][j]->input2[k] = b(k, j);
-				}
+				zadaci_m[i][j] = new (task::allocate_root()) MatrixTask(i, j, a, b, zadaci_p[i]);
 				task::spawn(*zadaci_m[i][j]);
 			}	
 

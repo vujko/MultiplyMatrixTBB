@@ -8,17 +8,14 @@ using namespace std;
 
 class MatrixTaskRoot : public task {
 public:
-	int red;
+	int i , j;
 	Matrix& a;
+	Matrix& b;
 	empty_task* e;
-	int* input1;
-	int* input2;
 	int* rez;
 
-	MatrixTaskRoot(int red_, Matrix& a_, empty_task* e_) :red(red_), a(a_), e(e_) {
+	MatrixTaskRoot( int i_, int j_, Matrix& a_, Matrix& b_, empty_task* e_) : a(a_),b(b_),i(i_), j(j_), e(e_) {
 		rez = new int[a.red]{ 0 };
-		input1 = new int[a.red];
-		input2 = new int[a.red];
 		set_ref_count(a.red - 1);
 	}
 
@@ -27,12 +24,12 @@ public:
 
 		int result = 0;
 		for (int k = 0; k < a.red; k++) {
-			result += input1[k] * input2[k];
+			result += a(i,k) * b(k,j);
 		}
 
-		a(red, 0) = result;
+		a(i, 0) = result;
 		for (int k = 1; k < a.red; k++) {
-			a(red, k) = rez[k];
+			a(i, k) = rez[k];
 		}
 
 		e->decrement_ref_count();
@@ -46,22 +43,17 @@ public:
 	int i, j;
 
 	MatrixTaskRoot* successor;
-	int* input1;
-	int* input2;
 	Matrix& a;
+	Matrix& b;
 
-	MatrixTask() :i(-1), j(-1),a(Matrix()) {};
-	MatrixTask(int i_, int j_, Matrix& a_, MatrixTaskRoot* succ_) :i(i_), j(j_), a(a_), successor(succ_) {
-
-		input1 = new int[a.red];
-		input2 = new int[a.red];
-	}
+	MatrixTask() :i(-1), j(-1),a(Matrix()), b(Matrix()) {};
+	MatrixTask(int i_, int j_, Matrix& a_, Matrix& b_, MatrixTaskRoot* succ_) :i(i_), j(j_), a(a_),b(b_), successor(succ_) {}
 
 	task* execute() {
 		
 
 		for (int k = 0; k < a.red; k++) {
-			successor->rez[j] += input1[k] * input2[k];
+			successor->rez[j] += a(i,k) * b(k,j);
 		}
 		if (successor->decrement_ref_count() == 0) {
 			task::spawn(*successor);
