@@ -1,12 +1,14 @@
 #include <iostream>
 #include <vector>
-#include <tchar.h>
 #include "Matrix.h"
 #include <string>
 #include <fstream>
 #include "ParallelMultiplication.h"
+#include <tbb/tick_count.h>
 
 using namespace std;
+
+#define M_SIZE 75
 
 void pomnoziSerijski(Matrix& A, Matrix& B) {
 	int dim = A.red;
@@ -47,25 +49,67 @@ Matrix ucitajMatricu(string my_file) {
 
 int main() {
 	try {
-		Matrix A_matrix = ucitajMatricu("inputA.txt");
-		Matrix B_matrix = ucitajMatricu("inputB.txt");
+		//Matrix A_matrix = ucitajMatricu("inputA.txt");
+		//Matrix B_matrix = ucitajMatricu("inputB.txt");
+
+		//cout << "Matrica A:" << endl;
+		//cout << A_matrix << endl << endl;
+		//cout << "Matrica B:" << endl;
+		//cout << B_matrix << endl << endl;
+
+
+		//tick_count start = tick_count::now();
+		//pomnoziSerijski(A_matrix, B_matrix);
+		//tick_count end = tick_count::now();
+
+		//cout << "Matrica A*B:" << endl;
+		//cout << A_matrix << endl;
+		//cout << "================================================================" << endl;
+		//cout <<  "Serijsko racunanje matrice A je trajalo: " << (end - start).seconds() * 1000 << "ms." << endl << endl;
+
+		//A_matrix = ucitajMatricu("inputA.txt");
+		//start = tick_count::now();
+		//ParallelMultiplication::multiply(A_matrix, B_matrix);
+		//end = tick_count::now();
+		//cout << endl << "A posle paralelnog mnozenja" << endl;
+		//cout << A_matrix << endl;
+		//cout << "=================================================================" << endl;
+		//cout << "Paralelno racunanje matrice A je trajalo: " << (end - start).seconds() * 1000 << "ms." << endl << endl;
+
+
+		Matrix Aprim = Matrix::gen_matrix(M_SIZE);
+		Matrix B = Matrix::gen_matrix(M_SIZE);
+
+		Matrix A = Aprim;
 
 		cout << "Matrica A:" << endl;
-		cout << A_matrix << endl << endl;
+		cout << A << endl << endl;
 		cout << "Matrica B:" << endl;
-		cout << B_matrix << endl << endl;
-		pomnoziSerijski(A_matrix, B_matrix);
+		cout << B << endl << endl;
+
+
+		tick_count start = tick_count::now();
+		pomnoziSerijski(A, B);
+		tick_count end = tick_count::now();
+
 		cout << "Matrica A*B:" << endl;
-		cout << A_matrix << endl;
+		cout << A << endl;
+		cout << "================================================================" << endl;
+		cout <<  "Serijsko racunanje matrice A je trajalo: " << (end - start).seconds() * 1000 << "ms." << endl << endl;
 
-		A_matrix = ucitajMatricu("inputA.txt");
-		ParallelMultiplication::multiply(A_matrix, B_matrix);
+		A = Aprim;
+		tick_count start2 = tick_count::now();
+		ParallelMultiplication::multiply(A, B);
+		tick_count end2 = tick_count::now();
 		cout << endl << "A posle paralelnog mnozenja" << endl;
-		cout << A_matrix << endl;
+		cout << A << endl;
 
+		cout << "================================================================" << endl;
+		cout << "Serijsko racunanje matrice A je trajalo: " << (end - start).seconds() * 1000 << "ms." << endl << endl;
 
+		cout << "=================================================================" << endl;
+		cout << "Paralelno racunanje matrice A je trajalo: " << (end2 - start2).seconds() * 1000 << "ms." << endl << endl;
 
-		
 		return 0;
 	}
 	catch (runtime_error e) {

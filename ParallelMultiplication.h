@@ -10,7 +10,8 @@ class ParallelMultiplication {
 public:
 	
 	static void multiply(Matrix& a, Matrix& b);
-	static MatrixTask*** zadaci;
+	static MatrixTask*** zadaci_m;
+	static MatrixTaskRoot** zadaci_p;
 	
 };
 

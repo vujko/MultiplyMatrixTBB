@@ -4,9 +4,25 @@ Matrix::Matrix(int rows_) :red(rows_), data(red*red, 0)
 {
 }
 
+const int & Matrix::operator()(int i, int j) const
+{
+	return data[i*red + j];
+}
+
 int & Matrix::operator()(int i, int j)
 {
 	return data[i*red + j];
+}
+
+Matrix Matrix::gen_matrix(int n)
+{
+	Matrix m(n);
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			m(i, j) = rand() % 10;
+		}
+	}
+	return m;
 }
 
 ostream & operator<<(ostream & out, const Matrix & m)
